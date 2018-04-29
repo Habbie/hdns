@@ -2,6 +2,7 @@
 local socket = require'socket'
 local bit = require'bit'
 local inspect = require'inspect'
+require'pl.strict'
 
 local sock = socket.udp()
 sock:setsockname('*', 5300)
