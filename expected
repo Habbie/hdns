@@ -1,0 +1,44 @@
+{
+  aa = 0,
+  ad = 1,
+  an = {},
+  ancount = 0,
+  ar = { {
+      qclass = 4096,
+      qname = {},
+      qtype = 41,
+      rdata = "\0\n\0\bsÌ\31\29·uúÊ\0d\0\4efgh",
+      rdlength = 20,
+      ttl = 0
+    } },
+  arcount = 1,
+  cd = 1,
+  edns = {
+    extracodeflags = 0,
+    options = { {
+        code = 10,
+        data = "sÌ\31\29·uúÊ",
+        len = 8
+      }, {
+        code = 100,
+        data = "efgh",
+        len = 4
+      } }
+  },
+  id = 29660,
+  ns = {},
+  nscount = 0,
+  opcode = 0,
+  qd = { {
+      qclass = 1,
+      qname = { "nl", "7bits" },
+      qtype = 1
+    } },
+  qdcount = 1,
+  qr = 0,
+  ra = 0,
+  rcode = 0,
+  rd = 0,
+  tc = 0,
+  z = 0
+}
