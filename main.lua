@@ -20,6 +20,8 @@ local function bytereader(data)
     local function getbyte()
         print("getbyte #data", #data)
         print("getbyte offset", offset)
+        assert(#data >= offset, "not enough bytes for getbyte")
+
         offset = offset + 1
         return data:byte(offset -1)
     end
@@ -172,5 +174,3 @@ end
 req.edns = maybeGetEDNS(req.ar)
 
 print(inspect(req))
-
-
