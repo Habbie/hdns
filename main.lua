@@ -7,6 +7,10 @@ require'pl.strict'
 local sock = socket.udp()
 sock:setsockname('*', 5300)
 
+local qtypes = {
+    OPT = 41
+}
+
 local data, ip, port = sock:receivefrom()
 print(type(data))
 
@@ -14,12 +18,14 @@ local req = {}
 local function bytereader(data)
     local offset = 1
     local function getbyte()
+        print("getbyte #data", #data)
+        print("getbyte offset", offset)
         offset = offset + 1
         return data:byte(offset -1)
     end
     local function getstring(n)
-        print("#data", #data)
-        print("offset, n, offset + n -1", offset, n, offset+n -1)
+        print("getstring #data", #data)
+        print("getstring offset, n, offset + n -1", offset, n, offset+n -1)
         assert(#data >= offset + n -1, "not enough bytes for getstring")
         local ret = data:sub(offset, offset + n -1)
         offset = offset + n
@@ -28,7 +34,11 @@ local function bytereader(data)
     local function getword()
         return getbyte() * 256 + getbyte()
     end
+    local function eod()
+        return offset > #data
+    end
     return {
+        eod = eod,
         getbyte = getbyte,
         getstring = getstring,
         getword = getword
@@ -131,6 +141,35 @@ end
 req.an = getrrs(byr, req.ancount)
 req.ns= getrrs(byr, req.nscount)
 req.ar = getrrs(byr, req.arcount)
+
+local function maybeGetEDNS(ar)
+    local ret
+    for i,v in ipairs(ar) do
+        if #v.qname == 0 and
+            v.qtype == qtypes.OPT then
+            print("ret", ret)
+            assert(not ret, "two OPT records?!")
+            ret = {}
+            ret.bufsize = v.class
+            ret.extracodeflags = v.ttl -- FIXME
+            local byr = bytereader(v.rdata)
+            local options = {}
+            while not byr.eod() do
+                local optioncode = byr.getword()
+                local optionlen = byr.getword()
+                table.insert(options, {
+                    code = optioncode,
+                    len = optionlen,
+                    data = byr.getstring(optionlen)
+                })
+            end
+            ret.options = options
+        end
+    end
+    return ret
+end
+
+req.edns = maybeGetEDNS(req.ar)
 
 print(inspect(req))
 
