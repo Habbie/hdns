@@ -12,22 +12,22 @@ local qtypes = {
 }
 
 local data, ip, port = sock:receivefrom()
-print(type(data))
+-- print(type(data))
 
 local req = {}
 local function bytereader(data)
     local offset = 1
     local function getbyte()
-        print("getbyte #data", #data)
-        print("getbyte offset", offset)
+        -- print("getbyte #data", #data)
+        -- print("getbyte offset", offset)
         assert(#data >= offset, "not enough bytes for getbyte")
 
         offset = offset + 1
         return data:byte(offset -1)
     end
     local function getstring(n)
-        print("getstring #data", #data)
-        print("getstring offset, n, offset + n -1", offset, n, offset+n -1)
+        -- print("getstring #data", #data)
+        -- print("getstring offset, n, offset + n -1", offset, n, offset+n -1)
         assert(#data >= offset + n -1, "not enough bytes for getstring")
         local ret = data:sub(offset, offset + n -1)
         offset = offset + n
@@ -49,7 +49,7 @@ end
 
 local function bitreader(data, size)
     -- size is a multiple of 8
-    print("bitreader data", data, size)
+    -- print("bitreader data", data, size)
     local offset = size - 1
     local function getbits(n)
         local res = 0
@@ -134,7 +134,7 @@ local function getrrs(byr, count)
             rdlength = byr.getword()
         }
         _ret.rdata = byr.getstring(_ret.rdlength)
-        print("#rdata", #_ret.rdata)
+        -- print("#rdata", #_ret.rdata)
         table.insert(ret, _ret)
     end
     return ret
@@ -149,7 +149,7 @@ local function maybeGetEDNS(ar)
     for i,v in ipairs(ar) do
         if #v.qname == 0 and
             v.qtype == qtypes.OPT then
-            print("ret", ret)
+            -- print("ret", ret)
             assert(not ret, "two OPT records?!")
             ret = {}
             ret.bufsize = v.class
