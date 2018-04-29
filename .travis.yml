@@ -1,0 +1,8 @@
+dist: trusty
+sudo: required
+before_install:
+  - sudo apt-get -qq update
+  - sudo apt-get install -yq --no-install-suggests --no-install-recommends --force-yes luajit luarocks lua-socket lua-sec lua-penlight
+  - sudo luarocks install inspect
+script:
+  - bash -x ./test.sh
